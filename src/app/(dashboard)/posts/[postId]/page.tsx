@@ -1,5 +1,3 @@
 "use client";
 
-import DetailPage from "@/features/posts/pages/DetailPage";
-
-export default DetailPage;
+export { default } from "@/features/posts/pages/DetailPage";

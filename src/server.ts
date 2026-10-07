@@ -7,15 +7,20 @@ function getPort(): string {
   if (process.env.PORT) return process.env.PORT.trim();
 
   const envPath = path.resolve(process.cwd(), ".env");
+
   if (fs.existsSync(envPath)) {
     try {
       const content = fs.readFileSync(envPath, "utf-8");
-      const match = content.match(/^\s*APP_PORT\s*=\s*(.+)$/m);
-      if (match && match[1]) {
+
+      const match = /^\s*APP_PORT\s*=\s*(.+)$/m.exec(content);
+
+      if (match?.[1]) {
         return match[1].trim();
       }
-      const portMatch = content.match(/^\s*PORT\s*=\s*(.+)$/m);
-      if (portMatch && portMatch[1]) {
+
+      const portMatch = /^\s*PORT\s*=\s*(.+)$/m.exec(content);
+
+      if (portMatch?.[1]) {
         return portMatch[1].trim();
       }
     } catch {
@@ -29,7 +34,10 @@ function getPort(): string {
 const action = process.argv[2] || "dev";
 const port = getPort();
 
-const nextArgs = action === "start" ? ["start", "-p", port] : ["dev", "--turbopack", "-p", port];
+const nextArgs =
+  action === "start"
+    ? ["start", "-p", port]
+    : ["dev", "--turbopack", "-p", port];
 
 const nextBin = require.resolve("next/dist/bin/next");
 

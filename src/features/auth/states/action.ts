@@ -26,6 +26,7 @@ export function asyncSetIsAuthLogin(email, password) {
       apiHelper.putAccessToken(data.token);
       dispatch(setIsAuthLoginActionCreator(true));
     } catch (error) {
+      console.error(error);
       dispatch(setIsAuthLoginActionCreator(false));
       showErrorDialog(error.message);
     }
@@ -47,6 +48,7 @@ export function asyncSetIsAuthRegister(name, email, password) {
       dispatch(setIsAuthRegisterActionCreator(true));
       showSuccessDialog(message);
     } catch (error) {
+      console.error(error);
       dispatch(setIsAuthRegisterActionCreator(false));
       showErrorDialog(error.message);
     }
@@ -66,6 +68,7 @@ export function asyncSetIsAuthLogout() {
     try {
       await authApi.postLogout();
     } catch (error) {
+      console.error(error);
       // Still proceed with clearing token locally even if server error
     } finally {
       apiHelper.putAccessToken("");

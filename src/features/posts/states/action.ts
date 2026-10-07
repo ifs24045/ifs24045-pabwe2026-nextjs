@@ -39,6 +39,7 @@ export function asyncSetPosts(is_me = "") {
       const posts = await postApi.getPosts(is_me);
       dispatch(setPostsActionCreator(posts));
     } catch (error) {
+      console.error(error);
       dispatch(setPostsActionCreator([]));
     }
   };
@@ -64,6 +65,7 @@ export function asyncSetPost(postId) {
       const post = await postApi.getPostById(postId);
       dispatch(setPostActionCreator(post));
     } catch (error) {
+      console.error(error);
       dispatch(setPostActionCreator(null));
     } finally {
       dispatch(setIsPostActionCreator(true));
@@ -92,6 +94,7 @@ export function asyncSetIsPostAdd(description) {
       showSuccessDialog("Postingan berhasil ditambahkan!");
       dispatch(setIsPostAddedActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostAddedActionCreator(false));
     } finally {
@@ -121,6 +124,7 @@ export function asyncSetIsPostChange(postId, description) {
       showSuccessDialog(message || "Postingan berhasil diperbarui!");
       dispatch(setIsPostChangedActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostChangedActionCreator(false));
     } finally {
@@ -150,6 +154,7 @@ export function asyncSetIsPostChangeCover(postId, cover) {
       showSuccessDialog(message || "Cover berhasil diperbarui!");
       dispatch(setIsPostChangedCoverActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostChangedCoverActionCreator(false));
     } finally {
@@ -179,6 +184,7 @@ export function asyncSetIsPostDelete(postId) {
       showSuccessDialog(message || "Postingan berhasil dihapus!");
       dispatch(setIsPostDeletedActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostDeletedActionCreator(false));
     } finally {
@@ -208,6 +214,7 @@ export function asyncSetIsPostLike(postId, like) {
       showSuccessDialog(message || "Status suka berhasil diperbarui!");
       dispatch(setIsPostLikedActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostLikedActionCreator(false));
     } finally {
@@ -237,6 +244,7 @@ export function asyncSetIsPostAddComment(postId, comment) {
       showSuccessDialog(message || "Komentar berhasil ditambahkan!");
       dispatch(setIsPostAddedCommentActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostAddedCommentActionCreator(false));
     } finally {
@@ -266,6 +274,7 @@ export function asyncSetIsPostDeleteComment(postId) {
       showSuccessDialog(message || "Komentar berhasil dihapus!");
       dispatch(setIsPostDeletedCommentActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostDeletedCommentActionCreator(false));
     } finally {
@@ -295,6 +304,7 @@ export function asyncSetIsPostDeleteAll() {
       showSuccessDialog(message || "Semua postingan berhasil dihapus!");
       dispatch(setIsPostDeletedAllActionCreator(true));
     } catch (error) {
+      console.error(error);
       showErrorDialog(error.message);
       dispatch(setIsPostDeletedAllActionCreator(false));
     } finally {

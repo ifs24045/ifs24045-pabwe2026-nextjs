@@ -59,22 +59,25 @@ function AddModal({ show, onClose }) {
       data-testid="add-post-modal"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200"
     >
-      <div
-        role="dialog"
+      <dialog
+        open
         aria-modal="true"
         aria-labelledby="add-post-modal-title"
         className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
               <IconPlus aria-hidden="true" size={18} stroke={2.5} />
             </div>
-            <h2 id="add-post-modal-title" className="text-base font-bold text-slate-800">
+            <h2
+              id="add-post-modal-title"
+              className="text-base font-bold text-slate-800"
+            >
               Tambah Postingan Baru
             </h2>
           </div>
+
           <button
             type="button"
             data-testid="close-add-modal-btn"
@@ -94,6 +97,7 @@ function AddModal({ show, onClose }) {
             >
               Deskripsi <span className="text-red-700">*</span>
             </label>
+
             <textarea
               id="add-post-description"
               data-testid="add-post-description-input"
@@ -116,6 +120,7 @@ function AddModal({ show, onClose }) {
             >
               Batal
             </button>
+
             <button
               type="submit"
               data-testid="submit-add-modal-btn"
@@ -124,7 +129,11 @@ function AddModal({ show, onClose }) {
             >
               {loading ? (
                 <>
-                  <IconLoader2 aria-hidden="true" size={18} className="animate-spin" />
+                  <IconLoader2
+                    aria-hidden="true"
+                    size={18}
+                    className="animate-spin"
+                  />
                   <span>Menyimpan...</span>
                 </>
               ) : (
@@ -136,7 +145,7 @@ function AddModal({ show, onClose }) {
             </button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 }

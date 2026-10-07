@@ -9,7 +9,7 @@ import { asyncSetIsAuthLogout, setIsAuthLogoutActionCreator } from "../../auth/s
 import NavbarComponent from "../components/NavbarComponent";
 import SidebarComponent from "../components/SidebarComponent";
 
-function PostLayout({ children }: { children: React.ReactNode }) {
+function PostLayout({ children }: {  readonly children: React.ReactNode;}) {
   const dispatch = useAppDispatch();
   const router = useRouter();
 

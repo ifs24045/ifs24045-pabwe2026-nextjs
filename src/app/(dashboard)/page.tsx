@@ -1,5 +1,3 @@
 "use client";
 
-import HomePage from "@/features/posts/pages/HomePage";
-
-export default HomePage;
+export { default } from "@/features/posts/pages/HomePage";

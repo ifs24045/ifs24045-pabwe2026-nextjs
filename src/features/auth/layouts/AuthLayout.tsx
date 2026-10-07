@@ -8,7 +8,7 @@ import apiHelper from "../../../helpers/apiHelper";
 import { asyncSetProfile, setIsProfile } from "../../users/states/action";
 import { IconNews } from "@tabler/icons-react";
 
-function AuthLayout({ children }: { children: React.ReactNode }) {
+function AuthLayout({ children }: {  readonly children: React.ReactNode;}) {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -33,6 +33,7 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
   }, [isProfile, profile, dispatch, router]);
 
   const isLoginActive = pathname === "/auth/login";
+  const isRegisterActive = pathname === "/auth/register";
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -64,7 +65,7 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
             <Link
               href="/auth/register"
               className={`flex-1 py-2 text-center text-sm font-semibold rounded-xl transition-all ${
-                !isLoginActive
+                isRegisterActive
                   ? "bg-white text-indigo-700 shadow-xs"
                   : "text-slate-600 hover:text-slate-900"
               }`}

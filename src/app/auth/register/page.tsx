@@ -1,5 +1,3 @@
 "use client";
 
-import RegisterPage from "@/features/auth/pages/RegisterPage";
-
-export default RegisterPage;
+export { default } from "@/features/auth/pages/RegisterPage";

@@ -13,8 +13,12 @@ import { IconX, IconPhotoUp, IconLoader2, IconUpload } from "@tabler/icons-react
 function ChangeCoverModal({ show, onClose, post }) {
   const dispatch = useAppDispatch();
 
-  const isPostChangeCover = useAppSelector((state) => state.isPostChangeCover);
-  const isPostChangedCover = useAppSelector((state) => state.isPostChangedCover);
+  const isPostChangeCover = useAppSelector(
+    (state) => state.isPostChangeCover
+  );
+  const isPostChangedCover = useAppSelector(
+    (state) => state.isPostChangedCover
+  );
 
   const [loading, setLoading] = useState(false);
   const [fileCover, setFileCover] = useState(null as File | null);
@@ -34,6 +38,7 @@ function ChangeCoverModal({ show, onClose, post }) {
     if (isPostChangeCover) {
       dispatch(setIsPostChangeCoverActionCreator(false));
       setLoading(false);
+
       if (isPostChangedCover) {
         dispatch(setIsPostChangedCoverActionCreator(false));
         dispatch(asyncSetPost(post?.id));
@@ -44,17 +49,22 @@ function ChangeCoverModal({ show, onClose, post }) {
 
   function handleFileChange(e) {
     const file = e.target.files?.[0];
+
     if (file) {
       const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
       if (!allowedTypes.includes(file.type)) {
         showErrorDialog("Hanya file JPEG, JPG, atau PNG yang diperbolehkan!");
         return;
       }
-      const MAX_FILE_SIZE = 1024 * 1024; // 1MB sesuai batas server
+
+      const MAX_FILE_SIZE = 1024 * 1024;
+
       if (file.size > MAX_FILE_SIZE) {
         showErrorDialog("Ukuran file terlalu besar. Maksimal 1MB!");
         return;
       }
+
       setFileCover(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
@@ -62,6 +72,7 @@ function ChangeCoverModal({ show, onClose, post }) {
 
   function handleSave(e) {
     e.preventDefault();
+
     if (!fileCover) {
       showErrorDialog("Pilih file cover terlebih dahulu!");
       return;
@@ -78,22 +89,26 @@ function ChangeCoverModal({ show, onClose, post }) {
       data-testid="change-cover-modal"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200"
     >
-      <div
-        role="dialog"
+      <dialog
+        open
         aria-modal="true"
         aria-labelledby="change-cover-modal-title"
         className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
               <IconPhotoUp aria-hidden="true" size={18} stroke={2.5} />
             </div>
-            <h2 id="change-cover-modal-title" className="text-base font-bold text-slate-800">
+
+            <h2
+              id="change-cover-modal-title"
+              className="text-base font-bold text-slate-800"
+            >
               Ubah Cover Postingan
             </h2>
           </div>
+
           <button
             type="button"
             data-testid="close-cover-modal-btn"
@@ -110,6 +125,7 @@ function ChangeCoverModal({ show, onClose, post }) {
             <span className="block text-sm font-semibold text-slate-700 mb-2">
               Pilih Gambar Cover
             </span>
+
             <label className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/20 transition-all overflow-hidden relative">
               {previewUrl ? (
                 <img
@@ -124,12 +140,17 @@ function ChangeCoverModal({ show, onClose, post }) {
                   <div className="w-10 h-10 mb-2 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
                     <IconUpload aria-hidden="true" size={20} />
                   </div>
+
                   <p className="text-sm font-semibold text-slate-700">
                     Klik untuk memilih foto
                   </p>
-                  <p className="text-xs text-slate-600 mt-1">PNG, JPG, JPEG (Max. 1MB)</p>
+
+                  <p className="text-xs text-slate-600 mt-1">
+                    PNG, JPG, JPEG (Max. 1MB)
+                  </p>
                 </div>
               )}
+
               <input
                 type="file"
                 data-testid="cover-file-input"
@@ -150,6 +171,7 @@ function ChangeCoverModal({ show, onClose, post }) {
             >
               Batal
             </button>
+
             <button
               type="submit"
               data-testid="submit-cover-modal-btn"
@@ -158,7 +180,11 @@ function ChangeCoverModal({ show, onClose, post }) {
             >
               {loading ? (
                 <>
-                  <IconLoader2 aria-hidden="true" size={18} className="animate-spin" />
+                  <IconLoader2
+                    aria-hidden="true"
+                    size={18}
+                    className="animate-spin"
+                  />
                   <span>Mengunggah...</span>
                 </>
               ) : (
@@ -170,7 +196,7 @@ function ChangeCoverModal({ show, onClose, post }) {
             </button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 }

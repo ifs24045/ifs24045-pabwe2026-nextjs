@@ -1,5 +1,3 @@
 "use client";
 
-import LoginPage from "@/features/auth/pages/LoginPage";
-
-export default LoginPage;
+export { default } from "@/features/auth/pages/LoginPage";
