@@ -6,6 +6,7 @@ import * as toolsHelper from "../../../helpers/toolsHelper";
 import * as postAction from "../states/action";
 
 const mockPush = vi.fn();
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
@@ -18,7 +19,12 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("HomePage", () => {
-  const mockProfile = { id: 1, name: "Abdullah", email: "abdul@del.org" };
+  const mockProfile = {
+    id: 1,
+    name: "Abdullah",
+    email: "abdul@del.org",
+  };
+
   const mockPosts = [
     {
       id: 1,
@@ -27,7 +33,10 @@ describe("HomePage", () => {
       cover: "https://example.com/cover1.jpg",
       created_at: "2024-02-26T02:34:26.000000Z",
       updated_at: "2024-02-26T02:44:47.000000Z",
-      author: { name: "Abdullah", photo: "https://example.com/photo.jpg" },
+      author: {
+        name: "Abdullah",
+        photo: "https://example.com/photo.jpg",
+      },
       likes: [2, 3],
       comments: [{ id: 1, comment: "Keren!" }],
     },
@@ -38,7 +47,10 @@ describe("HomePage", () => {
       cover: null,
       created_at: "2024-02-26T02:34:26.000000Z",
       updated_at: "2024-02-26T02:44:47.000000Z",
-      author: { name: "Ubaid", photo: null },
+      author: {
+        name: "Ubaid",
+        photo: null,
+      },
       likes: [],
       comments: [],
     },
@@ -50,13 +62,19 @@ describe("HomePage", () => {
 
   it("should return null if profile is not present", () => {
     const { container } = renderWithProviders(<HomePage />, {
-      preloadedState: { profile: null },
+      preloadedState: {
+        profile: null,
+      },
     });
+
     expect(container.firstChild).toBeNull();
   });
 
   it("should render posts stats and empty state when empty", async () => {
-    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(() => Promise.resolve());
+    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(() =>
+      Promise.resolve()
+    );
+
     renderWithProviders(<HomePage />, {
       preloadedState: {
         profile: mockProfile,
@@ -65,8 +83,11 @@ describe("HomePage", () => {
     });
 
     expect(screen.getByText("Linimasa Postingan")).toBeInTheDocument();
+
     await waitFor(() => {
-      expect(screen.getByText("Belum ada postingan yang cocok.")).toBeInTheDocument();
+      expect(
+        screen.getByText("Belum ada postingan yang cocok.")
+      ).toBeInTheDocument();
     });
   });
 
@@ -82,7 +103,9 @@ describe("HomePage", () => {
       },
     });
 
-    expect(screen.getByText("Memuat daftar postingan...")).toBeInTheDocument();
+    expect(
+      screen.getByText("Memuat daftar postingan...")
+    ).toBeInTheDocument();
   });
 
   it("should display stats count and filter/search posts", () => {
@@ -96,23 +119,37 @@ describe("HomePage", () => {
     expect(screen.getByText("Total Postingan")).toBeInTheDocument();
     expect(screen.getByText("Total Suka")).toBeInTheDocument();
     expect(screen.getByText("Total Komentar")).toBeInTheDocument();
-    expect(screen.getByText("Postingan pertama saya")).toBeInTheDocument();
+    expect(
+      screen.getByText("Postingan pertama saya")
+    ).toBeInTheDocument();
     expect(screen.getByText("Postingan kedua")).toBeInTheDocument();
     expect(screen.getByText("2 suka")).toBeInTheDocument();
     expect(screen.getByText("1 komentar")).toBeInTheDocument();
 
-    // Test search filter by description
     const searchInput = screen.getByTestId("search-post-input");
-    fireEvent.change(searchInput, { target: { value: "pertama" } });
 
-    expect(screen.getByText("Postingan pertama saya")).toBeInTheDocument();
-    expect(screen.queryByText("Postingan kedua")).not.toBeInTheDocument();
+    fireEvent.change(searchInput, {
+      target: {
+        value: "pertama",
+      },
+    });
 
-    // Test search filter by author name
-    fireEvent.change(searchInput, { target: { value: "ubaid" } });
+    expect(
+      screen.getByText("Postingan pertama saya")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByText("Postingan kedua")
+    ).not.toBeInTheDocument();
+
+    fireEvent.change(searchInput, {
+      target: {
+        value: "ubaid",
+      },
+    });
+
     expect(screen.getByText("Postingan kedua")).toBeInTheDocument();
 
-    // Test filter buttons
     const filterMineBtn = screen.getByTestId("filter-mine-btn");
     fireEvent.click(filterMineBtn);
 
@@ -121,30 +158,58 @@ describe("HomePage", () => {
   });
 
   it("should handle search against posts with null description and missing author", async () => {
-    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(() => Promise.resolve());
+    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(() =>
+      Promise.resolve()
+    );
+
     renderWithProviders(<HomePage />, {
       preloadedState: {
         profile: mockProfile,
-        posts: [{ id: 99, user_id: 1, description: null, author: null }],
+        posts: [
+          {
+            id: 99,
+            user_id: 1,
+            description: null,
+            author: null,
+          },
+        ],
       },
     });
-    // Wait for loading to finish first
+
     await waitFor(() => {
-      expect(screen.queryByText("Memuat daftar postingan...")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Memuat daftar postingan...")
+      ).not.toBeInTheDocument();
     });
+
     expect(screen.getByText("Tanpa Nama")).toBeInTheDocument();
     expect(screen.getByText("Tidak ada deskripsi.")).toBeInTheDocument();
 
     const searchInput = screen.getByTestId("search-post-input");
-    fireEvent.change(searchInput, { target: { value: "xyz" } });
-    expect(screen.getByText("Belum ada postingan yang cocok.")).toBeInTheDocument();
+
+    fireEvent.change(searchInput, {
+      target: {
+        value: "xyz",
+      },
+    });
+
+    expect(
+      screen.getByText("Belum ada postingan yang cocok.")
+    ).toBeInTheDocument();
   });
 
   it("should handle post author without name and without photo", () => {
     renderWithProviders(<HomePage />, {
       preloadedState: {
         profile: mockProfile,
-        posts: [{ id: 5, user_id: 1, description: "Tanpa author name", author: {} }],
+        posts: [
+          {
+            id: 5,
+            user_id: 1,
+            description: "Tanpa author name",
+            author: {},
+          },
+        ],
       },
     });
 
@@ -160,13 +225,18 @@ describe("HomePage", () => {
     });
 
     const addBtn = screen.getByTestId("add-post-btn");
+
     fireEvent.click(addBtn);
 
     expect(screen.getByTestId("add-post-modal")).toBeInTheDocument();
 
     const closeBtn = screen.getByTestId("close-add-modal-btn");
+
     fireEvent.click(closeBtn);
-    expect(screen.queryByTestId("add-post-modal")).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByTestId("add-post-modal")
+    ).not.toBeInTheDocument();
   });
 
   it("should navigate to detail page when view icon clicked", () => {
@@ -178,6 +248,7 @@ describe("HomePage", () => {
     });
 
     const viewBtn = screen.getByTestId("view-post-1");
+
     fireEvent.click(viewBtn);
 
     expect(mockPush).toHaveBeenCalledWith("/posts/1");
@@ -192,13 +263,18 @@ describe("HomePage", () => {
     });
 
     const editBtn = screen.getByTestId("edit-post-1");
+
     fireEvent.click(editBtn);
 
     expect(screen.getByTestId("edit-post-modal")).toBeInTheDocument();
 
     const closeBtn = screen.getByTestId("close-edit-modal-btn");
+
     fireEvent.click(closeBtn);
-    expect(screen.queryByTestId("edit-post-modal")).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByTestId("edit-post-modal")
+    ).not.toBeInTheDocument();
   });
 
   it("should open and close cover modal when cover icon clicked", () => {
@@ -210,13 +286,20 @@ describe("HomePage", () => {
     });
 
     const coverBtn = screen.getByTestId("cover-post-1");
+
     fireEvent.click(coverBtn);
 
-    expect(screen.getByTestId("change-cover-modal")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("change-cover-modal")
+    ).toBeInTheDocument();
 
     const closeBtn = screen.getByTestId("close-cover-modal-btn");
+
     fireEvent.click(closeBtn);
-    expect(screen.queryByTestId("change-cover-modal")).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByTestId("change-cover-modal")
+    ).not.toBeInTheDocument();
   });
 
   it("should trigger confirm dialog and dispatch delete when delete icon confirmed", async () => {
@@ -224,7 +307,9 @@ describe("HomePage", () => {
       .spyOn(postAction, "asyncSetIsPostDelete")
       .mockReturnValue(() => {});
 
-    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({ isConfirmed: true });
+    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({
+      isConfirmed: true,
+    });
 
     renderWithProviders(<HomePage />, {
       preloadedState: {
@@ -234,6 +319,7 @@ describe("HomePage", () => {
     });
 
     const deleteBtn = screen.getByTestId("delete-post-1");
+
     fireEvent.click(deleteBtn);
 
     await waitFor(() => {
@@ -246,7 +332,9 @@ describe("HomePage", () => {
       .spyOn(postAction, "asyncSetIsPostDelete")
       .mockReturnValue(() => {});
 
-    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({ isConfirmed: false });
+    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({
+      isConfirmed: false,
+    });
 
     renderWithProviders(<HomePage />, {
       preloadedState: {
@@ -256,11 +344,13 @@ describe("HomePage", () => {
     });
 
     const deleteBtn = screen.getByTestId("delete-post-1");
+
     fireEvent.click(deleteBtn);
 
     await waitFor(() => {
       expect(toolsHelper.showConfirmDialog).toHaveBeenCalled();
     });
+
     expect(deleteActionSpy).not.toHaveBeenCalled();
   });
 
@@ -269,7 +359,9 @@ describe("HomePage", () => {
       .spyOn(postAction, "asyncSetIsPostDeleteAll")
       .mockReturnValue(() => {});
 
-    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({ isConfirmed: true });
+    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({
+      isConfirmed: true,
+    });
 
     renderWithProviders(<HomePage />, {
       preloadedState: {
@@ -278,12 +370,14 @@ describe("HomePage", () => {
       },
     });
 
-    // Button only appears on the "Postingan Saya" filter
-    expect(screen.queryByTestId("delete-all-posts-btn")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("delete-all-posts-btn")
+    ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId("filter-mine-btn"));
 
     const deleteAllBtn = screen.getByTestId("delete-all-posts-btn");
+
     fireEvent.click(deleteAllBtn);
 
     await waitFor(() => {
@@ -296,7 +390,9 @@ describe("HomePage", () => {
       .spyOn(postAction, "asyncSetIsPostDeleteAll")
       .mockReturnValue(() => {});
 
-    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({ isConfirmed: false });
+    vi.spyOn(toolsHelper, "showConfirmDialog").mockResolvedValue({
+      isConfirmed: false,
+    });
 
     renderWithProviders(<HomePage />, {
       preloadedState: {
@@ -311,6 +407,7 @@ describe("HomePage", () => {
     await waitFor(() => {
       expect(toolsHelper.showConfirmDialog).toHaveBeenCalled();
     });
+
     expect(deleteAllSpy).not.toHaveBeenCalled();
   });
 
@@ -324,7 +421,10 @@ describe("HomePage", () => {
             user_id: 1,
             description: null,
             cover: "https://example.com/cover7.jpg",
-            author: { name: "", photo: "https://example.com/photo7.jpg" },
+            author: {
+              name: "",
+              photo: "https://example.com/photo7.jpg",
+            },
           },
         ],
       },
@@ -372,27 +472,40 @@ describe("HomePage", () => {
   });
 
   it("should not update loading state after unmount (isMounted guard on initial load)", async () => {
-    let resolveLoad;
+    let resolveLoad: (value?: unknown) => void;
+
     const pendingPromise = new Promise((resolve) => {
       resolveLoad = resolve;
     });
-    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(() => pendingPromise);
+
+    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(
+      () => pendingPromise
+    );
 
     const { unmount } = renderWithProviders(<HomePage />, {
-      preloadedState: { profile: mockProfile, posts: [] },
+      preloadedState: {
+        profile: mockProfile,
+        posts: [],
+      },
     });
+
     unmount();
-    resolveLoad();
-    await pendingPromise;
-    // No error = isMounted guard correctly prevents setState after unmount
+
+    resolveLoad!();
+
+    await expect(pendingPromise).resolves.toBeUndefined();
   });
 
   it("should not update loading state after unmount during isPostDeleted reload", async () => {
-    let resolveLoad;
+    let resolveLoad: (value?: unknown) => void;
+
     const pendingPromise = new Promise((resolve) => {
       resolveLoad = resolve;
     });
-    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(() => pendingPromise);
+
+    vi.spyOn(postAction, "asyncSetPosts").mockReturnValue(
+      () => pendingPromise
+    );
 
     const { unmount } = renderWithProviders(<HomePage />, {
       preloadedState: {
@@ -401,9 +514,11 @@ describe("HomePage", () => {
         isPostDeleted: true,
       },
     });
+
     unmount();
-    resolveLoad();
-    await pendingPromise;
-    // No error = isMounted guard correctly prevents setState after unmount
+
+    resolveLoad!();
+
+    await expect(pendingPromise).resolves.toBeUndefined();
   });
 });
