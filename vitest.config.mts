@@ -26,6 +26,7 @@ export default defineConfig({
         "src/components/Providers.tsx",
         "src/setupTests.ts",
         "src/lib/config.ts",
+        "src/lib/noop.js",
         "src/types/**",
         "src/hooks/redux.ts",
         "src/server.ts",
