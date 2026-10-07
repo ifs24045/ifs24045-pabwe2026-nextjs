@@ -8,6 +8,7 @@ describe("UsersPage", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
+
   const mockUsers = [
     {
       id: 1,
@@ -42,10 +43,12 @@ describe("UsersPage", () => {
     expect(screen.getByText("Semua Pengguna")).toBeInTheDocument();
     expect(screen.getByText("Abdullah")).toBeInTheDocument();
     expect(screen.getByText("Ubaid")).toBeInTheDocument();
-    expect(screen.getAllByText("U").length).toBeGreaterThan(0); // initial avatar fallback
+    expect(screen.getAllByText("U").length).toBeGreaterThan(0);
 
     const searchInput = screen.getByTestId("search-user-input");
-    fireEvent.change(searchInput, { target: { value: "abdullah" } });
+    fireEvent.change(searchInput, {
+      target: { value: "abdullah" },
+    });
 
     expect(screen.getByText("Abdullah")).toBeInTheDocument();
     expect(screen.queryByText("Ubaid")).not.toBeInTheDocument();
@@ -62,7 +65,10 @@ describe("UsersPage", () => {
   });
 
   it("should show empty state when no users found and not loading", async () => {
-    vi.spyOn(userAction, "asyncSetUsers").mockReturnValue(() => Promise.resolve());
+    vi.spyOn(userAction, "asyncSetUsers").mockReturnValue(
+      () => Promise.resolve()
+    );
+
     renderWithProviders(<UsersPage />, {
       preloadedState: {
         users: [],
@@ -87,22 +93,34 @@ describe("UsersPage", () => {
       },
     });
 
-    expect(screen.getByText("Memuat daftar pengguna...")).toBeInTheDocument();
+    expect(
+      screen.getByText("Memuat daftar pengguna...")
+    ).toBeInTheDocument();
   });
 
   it("should not update loading state after unmount (isMounted guard)", async () => {
-    let resolveLoad;
-    const pendingPromise = new Promise((resolve) => {
+    let resolveLoad: (() => void) | undefined;
+
+    const pendingPromise = new Promise<void>((resolve) => {
       resolveLoad = resolve;
     });
-    vi.spyOn(userAction, "asyncSetUsers").mockReturnValue(() => pendingPromise);
+
+    vi.spyOn(userAction, "asyncSetUsers").mockReturnValue(
+      () => pendingPromise
+    );
 
     const { unmount } = renderWithProviders(<UsersPage />, {
-      preloadedState: { users: [] },
+      preloadedState: {
+        users: [],
+      },
     });
+
     unmount();
-    resolveLoad();
-    await pendingPromise;
-    // No error = isMounted guard correctly prevents setState after unmount
+
+    expect(resolveLoad).toBeDefined();
+
+    resolveLoad!();
+
+    await expect(pendingPromise).resolves.toBeUndefined();
   });
 });
