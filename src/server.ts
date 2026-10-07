@@ -2,58 +2,61 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
-function getPort(): string {
-  if (process.env.APP_PORT) {
-    return process.env.APP_PORT.trim();
-  }
+function getEnvValue(content: string, targetKey: string): string | undefined {
+  for (const originalLine of content.split("\n")) {
+    const line = originalLine.endsWith("\r")
+      ? originalLine.slice(0, -1)
+      : originalLine;
 
-  if (process.env.PORT) {
-    return process.env.PORT.trim();
-  }
+    const separatorIndex = line.indexOf("=");
 
-  const envPath = path.resolve(process.cwd(), ".env");
+    if (separatorIndex === -1) {
+      continue;
+    }
 
-  if (fs.existsSync(envPath)) {
-    try {
-      const content = fs.readFileSync(envPath, "utf-8");
+    const key = line.slice(0, separatorIndex).trim();
 
-      let appPort: string | undefined;
-      let port: string | undefined;
+    if (key !== targetKey) {
+      continue;
+    }
 
-      for (const line of content.split(/\r?\n/)) {
-        const separatorIndex = line.indexOf("=");
+    const value = line.slice(separatorIndex + 1).trim();
 
-        if (separatorIndex === -1) {
-          continue;
-        }
-
-        const key = line.slice(0, separatorIndex).trim();
-        const value = line.slice(separatorIndex + 1).trim();
-
-        if (!value) {
-          continue;
-        }
-
-        if (key === "APP_PORT") {
-          appPort = value;
-        } else if (key === "PORT") {
-          port = value;
-        }
-      }
-
-      if (appPort) {
-        return appPort;
-      }
-
-      if (port) {
-        return port;
-      }
-    } catch {
-      // fallback jika file .env tidak dapat dibaca
+    if (value) {
+      return value;
     }
   }
 
-  return "3000";
+  return undefined;
+}
+
+function getPortFromFile(): string | undefined {
+  const envPath = path.resolve(process.cwd(), ".env");
+
+  if (!fs.existsSync(envPath)) {
+    return undefined;
+  }
+
+  try {
+    const content = fs.readFileSync(envPath, "utf-8");
+
+    return (
+      getEnvValue(content, "APP_PORT") ??
+      getEnvValue(content, "PORT")
+    );
+  } catch {
+    return undefined;
+  }
+}
+
+function getPort(): string {
+  const envPort = process.env.APP_PORT ?? process.env.PORT;
+
+  if (envPort) {
+    return envPort.trim();
+  }
+
+  return getPortFromFile() ?? "3000";
 }
 
 const action = process.argv[2] || "dev";
